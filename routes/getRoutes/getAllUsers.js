@@ -1,9 +1,10 @@
-function getAllUsers(model, {query}){
+function getAllUsers(model, res){
     // 
-    // Logic
     // 
     console.log(`Get request recieved`);
-    console.log(query);
-    return `This is the result from the database ${query}`;
+    model.find().then((result)=>{
+        console.log(result);
+        res.send(result);
+    })
 }
 module.exports = getAllUsers;
