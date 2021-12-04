@@ -5,6 +5,7 @@ function getAllUsers(model, res){
     model.find().then((result)=>{
         console.log(result);
         res.send(result);
+        // 
     })
 }
 module.exports = getAllUsers;
