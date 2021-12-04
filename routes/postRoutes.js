@@ -1,10 +1,15 @@
 // Funcntion containing all Post routes routes
-function postRoutes(app) {
-    // Root Create new users
-    app.post("/",(req, res)=>{
-        res.send("Listening for posts requests")
-    })
+const express = require("express")
+
+function postRoutes(app, models, bodyParser) {
     // 
+    
+    // post route to Create new users
+    app.post("/",(req, res)=>{
+        let createUser = require("./postRoutes/createUser");
+        res.send(createUser(models.userModel, req))
+    })
+    
     // Others...
 }
 module.exports = postRoutes;

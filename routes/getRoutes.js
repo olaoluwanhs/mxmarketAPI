@@ -1,8 +1,11 @@
 // Funcntion containing all get routes
-function getRoutes(app) {
-    // Root get route to get all users
+
+function getRoutes(app, models) {
+    // get route to get all users
     app.get("/",(req, res)=>{
-        res.send("Listening get requests")
+        // 
+        let getAllUsers = require("./getRoutes/getAllUsers")
+        res.send(getAllUsers(models.userModel, req))
     })
     // 
     // Others...
