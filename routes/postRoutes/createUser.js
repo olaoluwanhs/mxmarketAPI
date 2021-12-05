@@ -1,4 +1,4 @@
-function createUsers(model, {body}, bodyParser){
+function createUsers(model, {body}){
     // 
     // Logic
     // 

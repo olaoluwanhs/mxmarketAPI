@@ -1,7 +1,7 @@
 // Funcntion containing all Post routes routes
 const express = require("express")
 
-function postRoutes(app, models, bodyParser) {
+function postRoutes(app, models) {
     // 
     
     // post route to Create new users
