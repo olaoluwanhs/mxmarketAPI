@@ -8,10 +8,14 @@ mongoose.connection.on("error",()=>{
     console.log("there was an error connecting to mongoDB server");
 })
 // 
+// 
+// 
 //  Importing all models
 let userModel = require("./models/UserModel");
+let listingModel = require("./models/ListingModel");
 // 
 // Exporting models object
 module.exports = {
-    userModel
+    userModel,
+    listingModel
 }; 
