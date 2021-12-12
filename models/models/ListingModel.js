@@ -10,7 +10,7 @@ let listing = new Schema({
     postType: String,
     Negotiablity: {type:String, enum:["Negotiable", "Non-negotiable"]},
     priceType: {
-        type:String, enum:["Full-price, price-per"]
+        type:String, enum:["Full-price", "price-per", "on-call"]
     },
     pricePer: String,
     price: Number,
