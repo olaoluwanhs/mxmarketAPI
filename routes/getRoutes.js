@@ -11,6 +11,11 @@ function getRoutes(app, models) {
         let getAllListings = require("./getRoutes/getAllListings")
         getAllListings(models.listingModel, res)
     })
+    // 
+    app.get("/categories",(req, res)=>{
+        let getAllCategories = require("./getRoutes/getAllCategories")
+        getAllCategories(models.categoryModel, res)
+    })
     // Others...
 }
 module.exports = getRoutes;

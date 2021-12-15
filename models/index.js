@@ -11,11 +11,14 @@ mongoose.connection.on("error",()=>{
 // 
 // 
 //  Importing all models
-let userModel = require("./models/UserModel");
-let listingModel = require("./models/ListingModel");
+let userModel = require("./models/UserModel"),
+    listingModel = require("./models/ListingModel"),
+    {categoryModel} = require("./models/categoryModel")
+
 // 
 // Exporting models object
 module.exports = {
     userModel,
-    listingModel
+    listingModel,
+    categoryModel
 }; 

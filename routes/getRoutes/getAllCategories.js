@@ -1,4 +1,4 @@
-function getAllLisitings(model, res){
+function getAllCategories(model, res){
     // 
     // 
     // console.log(`Get request recieved`);
@@ -8,4 +8,4 @@ function getAllLisitings(model, res){
         // 
     })
 }
-module.exports = getAllLisitings;
+module.exports = getAllCategories;

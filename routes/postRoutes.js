@@ -13,5 +13,11 @@ function postRoutes(app, models) {
         res.send(createListing(models.listingModel, req))
     })
     // 
+    app.post("/categories", (req, res)=>{
+        let createCategory = require("./postRoutes/createCategory")
+        res.send(createCategory(models.categoryModel, req))
+        // console.log(models.categoryModel)
+    })
+    // Others...
 }
 module.exports = postRoutes;
