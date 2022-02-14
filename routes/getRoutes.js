@@ -1,20 +1,16 @@
 // Function containing all get routes
+const query = require("./getQueries");
 
-function getRoutes(app, models) {
-    // get route to get all users
+function getRoutes(app, mysqlCon) {
+    // get route to get a user
     app.get("/",(req, res)=>{
-        let getAllUsers = require("./getRoutes/getAllUsers")
-        getAllUsers(models.userModel, res)
+        let result = mysqlCon.query(query.getUser(req.params));
+        res.json(result);
     })
-    // 
+    // get rout to listings
     app.get("/listings",(req, res)=>{
-        let getAllListings = require("./getRoutes/getAllListings")
-        getAllListings(models.listingModel, res)
-    })
-    // 
-    app.get("/categories",(req, res)=>{
-        let getAllCategories = require("./getRoutes/getAllCategories")
-        getAllCategories(models.categoryModel, res)
+        let result = mysqlCon.query(query.getListing(req.params))
+        res.json(result);
     })
     // Others...
 }
