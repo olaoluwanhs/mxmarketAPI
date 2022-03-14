@@ -1,23 +1,32 @@
+const query = require("./postQueries");
+// console.log(query);
 // Funcntion containing all Post routes routes
-const express = require("express")
-
-function postRoutes(app, models) {
-    // post route to Create new users
-    app.post("/",(req, res)=>{
-        let createUser = require("./postRoutes/createUser");
-        res.json(createUser(models.userModel, req))
-    })
-    // 
-    app.post("/listing", (req, res)=>{
-        let createListing = require("./postRoutes/createListing")
-        res.json(createListing(models.listingModel, req))
-    })
-    // 
-    app.post("/categories", (req, res)=>{
-        let createCategory = require("./postRoutes/createCategory")
-        res.json(createCategory(models.categoryModel, req))
-        // console.log(models.categoryModel)
-    })
-    // Others...
+function postRoutes(app, mysqlCon) {
+  // post route to Create new users
+  app.post("/", ({ body }, res) => {
+    try {
+      // Check passwords
+      if (body.password != body.confirm) {
+        res.json({ message: "Password unconfirmed" });
+        return;
+      }
+      //
+      mysqlCon.query(query.createUser(body), (err, result) => {
+        if (err) {
+          console.log(error);
+          res.json({ message: "Error addding user" });
+        }
+        res.json(result);
+      });
+    } catch (error) {
+      //   console.log(error);
+      res.json({ message: "Error addding user" });
+    }
+  });
+  //
+  app.post("/listing", (req, res) => {});
+  //
+  app.post("/categories", (req, res) => {});
+  // Others...
 }
 module.exports = postRoutes;

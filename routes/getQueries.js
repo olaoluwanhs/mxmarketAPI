@@ -1,10 +1,14 @@
 class query{
-    getUser(info){
-        queryString=`Select * From user where username='${info.unsername}'and password='${info.password}'`;
+    getUser({name, password}){
+        let queryString=`Select * From users where user_name='${name}'and password='${password}'`;
         return queryString
     }
-    getListing(info){
-        queryString = `select * from listings where state = 'published' order by id desc limit 30`
+    getListing({limit}){
+        let queryString = `select * from listings where state = 'published' order by id desc limit ${limit}`
+        return queryString
+    }
+    getProfile({username}){
+        let queryString = `select first_name, last_name, user_name, email, phone_nuber, whatsapp, location from users where user_name='${username}'`
         return queryString
     }
 }

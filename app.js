@@ -1,15 +1,18 @@
-const mongoose = require("mongoose");
-const express = require("express");
-const cors = require("cors");
-const app = express();
-const port = 4000;
-const getRoutes = require("./routes/getRoutes");
-const postRoutes = require("./routes/postRoutes");
-const mysql = require("mysql");
+const mongoose = require("mongoose"),
+mysql = require("mysql"),
+{sign} = require('jsonwebtoken'),
+{serialize} = require('cookie');
+ express = require("express"),
+ cors = require("cors"),
+ app = express(),
+ port = 4000,
+ getRoutes = require("./routes/getRoutes"),
+ postRoutes = require("./routes/postRoutes"),
+require('dotenv').config();
 
 
 // Body parsing middleware
-app.use(cors());
+app.use(cors({credentials:true,origin:'http://localhost:3000'}));
 app.use(express.urlencoded({extended:true}))
 app.use(express.json());
 const mysqlCon = mysql.createConnection({
