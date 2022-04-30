@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, Sequelize } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class listings extends Model {
     /**
@@ -16,21 +16,37 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.UUID,
         unique: true,
-        allowNull: false,
         primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
       },
       category: DataTypes.STRING,
       sub_category: DataTypes.STRING,
       title: DataTypes.STRING,
-      slug: DataTypes.STRING,
+      slug: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: sequelize.col("id"),
+      },
       author: DataTypes.INTEGER,
       price_type: DataTypes.STRING,
       price: DataTypes.INTEGER,
       description: DataTypes.STRING,
+      state: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "published",
+      },
     },
     {
       sequelize,
       modelName: "listings",
+      hooks: {
+        beforeSave: (user) => {
+          // console.log(user.id);
+          user.slug = `${user.title.replace(/ /g, "-")}-${user.id}`;
+          // console.log();
+        },
+      },
     }
   );
   return listings;

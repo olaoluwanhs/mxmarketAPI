@@ -1,5 +1,7 @@
 const getRoutes = require("./routes/getRoutes");
 const postRoutes = require("./routes/postRoutes");
+const updateRoutes = require("./routes/putRoutes");
+const cookieParser = require("cookie-parser");
 const { sign } = require("jsonwebtoken"),
   { serialize } = require("cookie"),
   express = require("express"),
@@ -13,10 +15,12 @@ require("dotenv").config();
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 //
 getRoutes(app);
 postRoutes(app);
-syncStuff();
+updateRoutes(app);
+// syncStuff();
 
 // Listen on port 3000
 app.listen(port, () => {

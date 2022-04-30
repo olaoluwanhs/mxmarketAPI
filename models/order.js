@@ -1,5 +1,5 @@
 "use strict";
-const { Model } = require("sequelize");
+const { Model, UUID } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class order extends Model {
     /**
@@ -13,12 +13,15 @@ module.exports = (sequelize, DataTypes) => {
   }
   order.init(
     {
-      id: {
+      uuid: {
         type: DataTypes.UUID,
         unique: true,
         primaryKey: true,
+        defaultValue: sequelize.UUIDV4,
       },
       products: DataTypes.STRING,
+      from: DataTypes.INTEGER,
+      to: DataTypes.INTEGER,
     },
     {
       sequelize,

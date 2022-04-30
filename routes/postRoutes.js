@@ -1,9 +1,16 @@
-const { sequelize, users } = require("../models");
+const { sequelize, users, listings } = require("../models");
 const { use } = require("express/lib/application");
+const { signUser, verifyUser } = require("./middleware/jwt");
 //
 function postRoutes(app) {
   // post route to Create new users
   app.post("/users", async ({ body }, res) => {
+    if (body.password != body.confirm_password) {
+      res.json({
+        message: "Password unconfirmed",
+      });
+      return;
+    }
     try {
       const user = await users.create(body);
       res.json(user);
@@ -17,25 +24,18 @@ function postRoutes(app) {
   });
   //
 
-  app.post("/listings", ({ body }, res) => {
-    //
-    function getFinalBody(body) {
+  app.post("/listing", verifyUser, async ({ body, authenticatedUser }, res) => {
+    try {
       //
-      return body;
+      // console.log(body);
+      body.author = authenticatedUser.id;
+      let results = await listings.create(body);
+      res.json(results);
+      //
+    } catch (error) {
+      console.log(error);
+      res.json({ message: "An error occured", error });
     }
-
-    //
-    let finalBody = getFinalBody(body);
-    mysqlCon.query(query.createListing(body), (err, result) => {
-      //
-      if (err) {
-        console.log(err);
-        res.json(err);
-        return;
-      }
-      //
-      res.json(body);
-    });
   });
   //
 

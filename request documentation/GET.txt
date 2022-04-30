@@ -1,0 +1,22 @@
+Login a user GET("/login")
+new URLSearchParams(
+{
+    "user_name":"olaoluwanhs",
+    "password":"qwerty"
+}
+)
+
+Get published listings GET("/listings")
+new URLSearchParams(
+{
+    "start":1,
+    "limit":3
+}
+)
+
+Get user profile info GET("/profile")
+new URLSearchParams(
+{
+    user_name:"olaoluwanhs"
+}
+)

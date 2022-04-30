@@ -1,0 +1,24 @@
+Create new listing example POST("/listing")
+{
+    "category":"fashion",
+    "sub_category": "mens shoes",
+    "title": "brogges cover shoe",
+    "slug": "",
+    "author": "24",
+    "price_type":"price",
+    "price": 35000,
+    "description": "stufffffsssss"
+}
+Create new user POST("/users")
+{
+    "first_name": "olaoluwa",
+      "last_name": "babatunde",
+      "user_name": "olaoluwanhs",
+      "password": "qwerty",
+      "confirm_password":"qwerty",
+      "email": "olaoluwanhs@gmail.com",
+      "phone_number": "080987987856876",
+      "whatsapp": 2341234123,
+      "location": "234123",
+      "image": ""
+}
