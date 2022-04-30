@@ -1,0 +1,4 @@
+Delete a listing DELETE("/listing")
+{
+    "id":"d26245a0-9787-476b-b222-0409f24b119c"
+}

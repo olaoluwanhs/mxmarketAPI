@@ -2,6 +2,8 @@ const getRoutes = require("./routes/getRoutes");
 const postRoutes = require("./routes/postRoutes");
 const updateRoutes = require("./routes/putRoutes");
 const cookieParser = require("cookie-parser");
+const { expireListing, deleteListing } = require("./regulation/regulate");
+const { deleteRoutes } = require("./routes/deleteRoutes");
 const { sign } = require("jsonwebtoken"),
   { serialize } = require("cookie"),
   express = require("express"),
@@ -20,8 +22,13 @@ app.use(cookieParser());
 getRoutes(app);
 postRoutes(app);
 updateRoutes(app);
+deleteRoutes(app);
 // syncStuff();
-
+let expireListingInterval = setInterval(() => {
+  expireListing();
+  deleteListing();
+}, 12 * 60 * 60 * 1000);
+//
 // Listen on port 3000
 app.listen(port, () => {
   console.log(`server listening on port ${port}`);

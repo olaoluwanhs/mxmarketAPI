@@ -27,8 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: sequelize.col("id"),
       },
-      author: DataTypes.INTEGER,
-      price_type: DataTypes.STRING,
+      author: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       price: DataTypes.INTEGER,
       description: DataTypes.STRING,
       state: {
@@ -36,15 +38,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "published",
       },
+      expiry: {
+        type: "TIMESTAMP",
+        defaultValue: sequelize.literal(
+          "DATE_ADD(CURRENT_DATE(), INTERVAL 30 DAY)"
+        ),
+        allowNull: false,
+      },
     },
     {
       sequelize,
       modelName: "listings",
       hooks: {
         beforeSave: (user) => {
-          // console.log(user.id);
           user.slug = `${user.title.replace(/ /g, "-")}-${user.id}`;
-          // console.log();
         },
       },
     }

@@ -1,0 +1,28 @@
+Update user like editing user info or changing password PUT("/user")
+{
+    "update":{
+    "first_name": "Olaoluwa",
+      "last_name": "Babatunde",
+      "user_name": "olaoluwanhs",
+      "password": "qwerty",
+      "email": "olaoluwanhs@gmail.com",
+      "phone_number": "080987987856876",
+      "whatsapp": 234123412323423,
+      "location": "GK",
+      "image": ""
+},
+ "passwordChange":"notAllowed"
+}
+
+Update a listing PUT("/liksting")
+{
+    "id":"491c0f11-4cf5-433b-ab8a-eec41798a3fb",
+    "category":"technology",
+    "sub_category": "phones",
+    "title": "Techno tablet phone",
+    "slug": "",
+    "author": "1",
+    "price_type":"price",
+    "price": 45000,
+    "description": "nice phone stufff"
+}
