@@ -14,7 +14,7 @@ Update user like editing user info or changing password PUT("/user")
  "passwordChange":"notAllowed"
 }
 
-Update a listing PUT("/liksting")
+Update a listing PUT("/listing")
 {
     "id":"491c0f11-4cf5-433b-ab8a-eec41798a3fb",
     "category":"technology",
@@ -25,4 +25,24 @@ Update a listing PUT("/liksting")
     "price_type":"price",
     "price": 45000,
     "description": "nice phone stufff"
+}
+
+update affiliate products PUT("/affiliate")
+{
+    "id":"44b1019a-d70d-4757-a3ff-fad6a04e1250",
+    "title":"title",
+    "link":"links39980980",
+    "description":"descrition",
+    "pictures":"stuff, silkn, kjd"
+}
+
+
+update blog posts ("/post")
+{
+    "id": "836b10a2-39ee-4bf5-8fa4-3d8639dadf96",
+    "title": "title yeaahhh",
+    "slug": "title-yeaahhhh",
+    "image": "stuff.jpg",
+    "content": "content",
+    "author": "1"
 }

@@ -2,3 +2,9 @@ Delete a listing DELETE("/listing")
 {
     "id":"d26245a0-9787-476b-b222-0409f24b119c"
 }
+
+Delete a category DELETE("/category")
+{
+ "category_name":"fashion",
+ "sub_category":"men's shoes"
+}

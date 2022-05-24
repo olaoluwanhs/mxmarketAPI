@@ -13,8 +13,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   affiliate.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        unique: true,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
       title: DataTypes.STRING,
-      link: DataTypes.STRING,
+      link: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
       description: DataTypes.STRING,
       pictures: DataTypes.STRING,
     },

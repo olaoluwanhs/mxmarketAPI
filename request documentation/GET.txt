@@ -20,3 +20,26 @@ new URLSearchParams(
     user_name:"olaoluwanhs"
 }
 )
+
+Get order GET("/order")
+new URLSearchParams(
+    {
+        id:dqweqwe-sdfefwef-awdqweqwe-caa-wrw
+    }
+)
+
+Get Orders GET("/orders")
+new URLSearchParams(
+    {
+        offset:0,
+        limit:30,
+        type:from,
+    }
+)
+
+GET Categories GET("/category")
+new URLSearchParams(
+    {
+        category:"category name"
+    }
+)

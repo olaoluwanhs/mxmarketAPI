@@ -22,3 +22,33 @@ Create new user POST("/users")
       "location": "234123",
       "image": ""
 }
+Create a new order POST("/order")
+{
+    "from":1,
+    "to":2,
+    "price":2000,
+    "description":"stufffs you need to know about the product i want",
+    "product":24
+}
+
+Craete new category POST("/category")
+{
+ "category_name":"fashion",
+ "sub_category":"men's shoes"
+}
+
+create new affiliate listing ("/affiliate")
+{
+    "title":"title",
+    "link":"links39",
+    "description":"descrition",
+    "pictures":"stuff, silkn, kjd"
+}
+
+create new blog post ("/post")
+{
+    "title":"title 123",
+    "content":"content",
+    "slug":"title-123",
+    "image":"stuff.jpg"
+}

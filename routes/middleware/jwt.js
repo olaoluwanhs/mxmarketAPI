@@ -13,8 +13,8 @@ function verifyUser(req, res, next) {
     req.authenticatedUser = user;
     next();
   } catch (error) {
-    // console.log(error);
-    res.json({ mesage: "There was an error", error });
+    console.log(error.message);
+    res.json({ mesage: "Unauthorized user" });
   }
 }
 

@@ -1,7 +1,13 @@
 const res = require("express/lib/response");
 const { DATE } = require("mysql/lib/protocol/constants/types");
-const { sequelize, users, listings } = require("../models");
-const { isMoreThan30DaysAgo } = require("./middleware/day");
+const {
+  sequelize,
+  users,
+  listings,
+  order,
+  affiliate,
+  posts,
+} = require("../models");
 const { verifyUser, signUser } = require("./middleware/jwt");
 
 function updateRoutes(app) {
@@ -110,5 +116,118 @@ function updateRoutes(app) {
     return res.json(renewed);
   });
   //
+  // update order to sent, delivered
+  app.put("/deliever", verifyUser, async ({ body, authenticatedUser }, res) => {
+    //
+    // confirm authenticated user
+    if (authenticatedUser == {}) {
+      return res.json({ message: "Unauthorised action" });
+    }
+    // get object to be updated
+    const toBeUpdatedOrder = await order.findOne({
+      where: {
+        uuid: body.uuid,
+      },
+    });
+    // check that authenticated user is either the from or to
+    if (authenticatedUser.id != toBeUpdatedOrder.to) {
+      console.log(toBeUpdatedOrder.to, authenticatedUser.id);
+      return res.json({ message: "Unauthorized action" });
+    }
+    // check operation from or to is trying to perform
+    // edit order and then update
+    const updateSuccesfully = await order.update(
+      { state: body.action },
+      {
+        where: {
+          uuid: body.uuid,
+        },
+      }
+    );
+    // return updated successfully
+    return res.json({
+      message: "successfully update",
+      result: updateSuccesfully,
+    });
+    //
+  });
+  //
+  app.put(
+    "/affiliate",
+    verifyUser,
+    async ({ body, authenticatedUser }, res) => {
+      try {
+        // confirm authenticated user is an admin
+        if (authenticatedUser.id == undefined) {
+          return res.json({ message: "Unauthorised action" });
+        }
+        const admin = await users.findOne({
+          where: {
+            id: authenticatedUser.id,
+          },
+        });
+        //
+        if (admin.userType != "admin") {
+          return res.json({ message: "Unauthorised action" });
+        }
+        // updated the affiliate product
+        const updated = await affiliate.update(body, {
+          where: {
+            id: body.id,
+          },
+        });
+
+        // return the result
+        return res.json(updated);
+      } catch (error) {
+        return {
+          message: "An error occured",
+          error: error.message,
+        };
+      }
+    }
+  );
+  //
+  app.put("/post", verifyUser, async ({ body, authenticatedUser }, res) => {
+    try {
+      if (authenticatedUser.id == undefined) {
+        return res.json({ message: "Unathorised User" });
+      }
+      //
+      const admin = await users.findOne({
+        where: {
+          id: authenticatedUser.id,
+        },
+      });
+      //
+      console.log(admin.userType, "admin");
+      if (admin.userType != "admin" && admin.userType != "author") {
+        return res.json({ message: "Unathorised action" });
+      }
+      //
+      const updatingPost = await posts.findOne({
+        where: {
+          id: body.id,
+        },
+      });
+      if (updatingPost.author == undefined) {
+        return res.json({ message: "The post doesn't exist anymore" });
+      }
+      //
+      if (updatingPost.author != authenticatedUser.id) {
+        return res.json({ message: "Unauthorised Action (not the author)" });
+      }
+      //
+      const updated = posts.update(body, {
+        where: {
+          id: body.id,
+        },
+      });
+      //
+      return res.json({ message: "Successfull", updated });
+    } catch (error) {
+      return res.json({ message: "An error occured", error });
+    }
+  });
 }
 module.exports = updateRoutes;

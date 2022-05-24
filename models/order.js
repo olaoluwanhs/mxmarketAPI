@@ -17,11 +17,23 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         unique: true,
         primaryKey: true,
-        defaultValue: sequelize.UUIDV4,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
       },
-      products: DataTypes.STRING,
-      from: DataTypes.INTEGER,
-      to: DataTypes.INTEGER,
+      state: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "sent",
+      },
+      product: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "this-is-a-delivery-request-alone",
+      }, //listing id
+      from: { type: DataTypes.INTEGER, allowNull: false },
+      to: { type: DataTypes.INTEGER, allowNull: false },
+      price: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+      description: DataTypes.STRING,
     },
     {
       sequelize,

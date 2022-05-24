@@ -52,6 +52,16 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         allowNull: true,
       },
+      wallet: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+      },
+      userType: {
+        type: DataTypes.STRING,
+        defaultValue: "user",
+        allowNull: false,
+      },
     },
     {
       sequelize,
