@@ -15,10 +15,10 @@ function updateRoutes(app) {
   app.put("/user", verifyUser, async ({ body, authenticatedUser }, res) => {
     try {
       //
-      //   console.log(authenticatedUser);
+      console.log(authenticatedUser);
       if (
-        authenticatedUser.id == undefined ||
-        authenticatedUser.email != body.update.email
+        authenticatedUser.id == undefined
+        // authenticatedUser.email != body.update.email
       ) {
         return res.json({ message: "unauthorized action" });
       }
@@ -55,9 +55,10 @@ function updateRoutes(app) {
       return res.json(updatedUser);
       //
     } catch (error) {
+      console.log(error);
       res.json({
         message: "An error occured",
-        error,
+        error: error.message,
       });
     }
   });

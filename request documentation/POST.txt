@@ -28,7 +28,8 @@ Create a new order POST("/order")
     "to":2,
     "price":2000,
     "description":"stufffs you need to know about the product i want",
-    "product":24
+    "product_name":"stuff"
+    "product":"689afe25-f370-4790-910f-48e8fd2afc55"
 }
 
 Craete new category POST("/category")

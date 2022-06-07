@@ -18,12 +18,33 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
       },
-      title: DataTypes.STRING,
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          len: {
+            msg: "Title must be longer than 5 characters",
+            args: [5],
+          },
+        },
+      },
+      price: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       link: {
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
+        validate: {
+          len: {
+            msg: "Link is empty",
+            args: [3],
+          },
+        },
       },
       description: DataTypes.STRING,
       pictures: DataTypes.STRING,

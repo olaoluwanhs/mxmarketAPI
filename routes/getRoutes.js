@@ -14,9 +14,17 @@ const {
 } = require("../models");
 const { signUser, verifyUser } = require("./middleware/jwt");
 const req = require("express/lib/request");
+const res = require("express/lib/response");
 
-function getRoutes(app, mysqlCon) {
+function getRoutes(app) {
   // get route to get a user
+  app.get(
+    "/checkUser",
+    verifyUser,
+    async ({ authenticatedUser, cookies }, res) => {
+      return res.json(authenticatedUser);
+    }
+  );
   // Login route
   app.get("/login", async ({ query }, res) => {
     try {
@@ -27,7 +35,7 @@ function getRoutes(app, mysqlCon) {
             { email: query.user_name || "" },
           ],
         },
-        attributes: ["id", "user_name", "password", "email"],
+        attributes: ["id", "user_name", "password", "email", "userType"],
       });
       // console.log(query);
       user != null
@@ -39,6 +47,7 @@ function getRoutes(app, mysqlCon) {
                 id: user.id,
                 user_name: user.user_name,
                 email: user.email,
+                userType: user.userType,
               };
               res.cookie("mxcookie", signUser(jwtUser, process.env.SECRET), {
                 httpOnly: true,
@@ -52,10 +61,24 @@ function getRoutes(app, mysqlCon) {
             res.json({ message: "no user found" });
           })();
       // console.log(user);
-    } catch (error) {}
+    } catch (error) {
+      return res.json({ message: "An error occured", error: error.message });
+    }
   });
 
   //
+  app.get("/logout", async (req, res) => {
+    try {
+      //
+      res.cookie("mxcookie", "", {
+        httpOnly: true,
+        maxAge: 1,
+      });
+      res.json({ message: "logged Out" });
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
   // get profile information
   app.get("/profile", verifyUser, async ({ query, authenticatedUser }, res) => {
     try {
@@ -84,8 +107,8 @@ function getRoutes(app, mysqlCon) {
         })()
       );
     } catch (error) {
-      console.log(error.message);
-      res.json({ message: "Error occured", error: error });
+      console.log(error);
+      res.json({ message: "Error occured", error: error.message });
     }
   });
 
@@ -96,11 +119,12 @@ function getRoutes(app, mysqlCon) {
     try {
       const result = await listings.findAll({
         where: { state: "published" },
-        offset: Number(start),
-        limit: Number(limit),
+        offset: Number(start) || 0,
+        limit: Number(limit) || undefined,
         order: [["updatedAt", "DESC"]],
       });
-      res.json(result);
+      // console.log(result.length);
+      return res.json(result);
     } catch (error) {
       console.log(error.message);
       res.json({
@@ -109,6 +133,32 @@ function getRoutes(app, mysqlCon) {
       });
     }
     //
+  });
+  //
+  app.get("/listing", verifyUser, async ({ query, authenticatedUser }, res) => {
+    //
+    try {
+      //
+      const object = await listings.findOne({
+        where: {
+          slug: query.slug,
+        },
+      });
+      if (object == null) {
+        return res.status(404).json({ message: "Listing not found" });
+      }
+      //
+      const owner =
+        authenticatedUser.id == object.author ? "this-user" : "not-this-user";
+      //
+      return res.json({ message: owner, result: object });
+      //
+    } catch (error) {
+      return res.status(409).json({
+        message: "An error occured",
+        error: error.message,
+      });
+    }
   });
   //
   app.get("/order", verifyUser, async ({ query, authenticatedUser }, res) => {
@@ -149,16 +199,17 @@ function getRoutes(app, mysqlCon) {
       if (authenticatedUser.id == undefined) {
         return res.json({ message: "Unauthorised action" });
       }
+      console.log(authenticatedUser);
       //
       let where =
         query.type == "from"
-          ? { from: authenticatedUser.id }
-          : { to: authenticatedUser.id };
+          ? { from: authenticatedUser.user_name }
+          : { to: authenticatedUser.user_name };
       //
       const orderLists = await order.findAll({
         where: where,
-        offset: Number(query.offset),
-        limit: Number(query.limit),
+        offset: Number(query.offset) || 0,
+        limit: Number(query.limit) || undefined,
       });
       //
       return res.json(orderLists);
@@ -238,8 +289,8 @@ function getRoutes(app, mysqlCon) {
   app.get("/posts", async ({ query }, res) => {
     try {
       const postList = await posts.findAll({
-        limit: Number(query.limit) || undefined,
         offset: Number(query.offset) || 0,
+        limit: Number(query.limit) || undefined,
       });
       return res.json(postList);
       //
@@ -248,6 +299,62 @@ function getRoutes(app, mysqlCon) {
         message: "An error occured",
         error,
       });
+    }
+  });
+  //
+  app.get("/searchPost", async ({ query }, res) => {
+    try {
+      const postList = await posts.findAll({
+        where: {
+          title: { [Op.like]: `%${query.term}%` },
+        },
+        offset: Number(query.offset) || 0,
+        limit: Number(query.limit) || undefined,
+      });
+      return res.json(postList);
+      //
+    } catch (error) {
+      return res.json({
+        message: "An error occured",
+        error,
+      });
+    }
+  });
+  //
+  app.get("/search", async ({ query }, res) => {
+    try {
+      console.log(query);
+      const results = await listings.findAll({
+        where: {
+          category: { [Op.like]: `%${query.category || ""}%` },
+          sub_category: { [Op.like]: `%${query.subcategory || ""}%` },
+          [Op.and]: [
+            {
+              [Op.or]: {
+                [Op.and]: {
+                  price: { [Op.gt]: query.min || 0 },
+                  price: { [Op.lt]: query.max || 1000000 },
+                },
+                price_type: "on-call",
+              },
+            },
+            {
+              [Op.or]: {
+                title: { [Op.like]: `%${query.term || ""}%` },
+                description: { [Op.like]: `%${query.term || ""}%` },
+              },
+            },
+          ],
+        },
+        limit: 20,
+        offset: query.offset || 0,
+      });
+      //
+      // console.log(results);
+      return res.json(results);
+    } catch (error) {
+      console.log(error.message);
+      return res.json({ message: "An error occured", error: error.message });
     }
   });
   // Others...

@@ -7,16 +7,15 @@ const {
   affiliate,
   posts,
 } = require("../models");
-const { use } = require("express/lib/application");
 const { signUser, verifyUser } = require("./middleware/jwt");
-const res = require("express/lib/response");
 //
 function postRoutes(app) {
   // post route to Create new users
   app.post("/users", async ({ body }, res) => {
     if (body.password != body.confirm_password) {
-      res.json({
+      return res.status(409).json({
         message: "Password unconfirmed",
+        error: { message: "password not confirmed" },
       });
       return;
     }
@@ -24,8 +23,8 @@ function postRoutes(app) {
       const user = await users.create(body);
       res.json(user);
     } catch (error) {
-      console.log(error.message);
-      res.json({
+      // console.log(error.message);
+      res.status(409).json({
         message: "Error addding user",
         error: error,
       });
@@ -36,6 +35,17 @@ function postRoutes(app) {
   app.post("/listing", verifyUser, async ({ body, authenticatedUser }, res) => {
     try {
       //
+      console.log(authenticatedUser);
+      const user = await users.findOne({
+        where: {
+          id: authenticatedUser.id,
+        },
+      });
+      if (user == null) {
+        return res.status(409).json({
+          message: "User not logged in",
+        });
+      }
       // console.log(body);
       body.author = authenticatedUser.id;
       let results = await listings.create(body);
@@ -134,6 +144,7 @@ function postRoutes(app) {
     verifyUser,
     async ({ body, authenticatedUser }, res) => {
       try {
+        console.log(authenticatedUser);
         //
         if (authenticatedUser.id == undefined) {
           return res.json({ message: "Unathorised User" });
@@ -155,6 +166,7 @@ function postRoutes(app) {
           link: body.link,
           description: body.description,
           pictures: body.pictures,
+          price: body.price,
         });
         //
         return res.json(addedAffiliate);
@@ -166,6 +178,7 @@ function postRoutes(app) {
   );
   //
   app.post("/post", verifyUser, async ({ body, authenticatedUser }, res) => {
+    console.log(body);
     try {
       if (authenticatedUser.id == undefined) {
         return res.json({ message: "Unathorised User" });
@@ -176,16 +189,30 @@ function postRoutes(app) {
           id: authenticatedUser.id,
         },
       });
+      // console.log(admin);
       //
-      if (admin.userType != "admin" || admin.userType != "author") {
+      if (admin.userType != "admin" && admin.userType != "author") {
         return res.json({ message: "Unathorised action" });
       }
       //
+      // console.log(body);
       const posted = await posts.create(body);
       return res.json(posted);
       //
     } catch (error) {
       return res.json({ message: "An error occurred", error });
+    }
+  });
+  //
+  app.post("/search", async ({ body }, res) => {
+    //
+    try {
+      //
+      const result = await listings.findAll(body);
+      return res.json(result);
+      //
+    } catch (error) {
+      return res.json({ message: "An error occured", error: error.message });
     }
   });
   // Others...

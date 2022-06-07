@@ -23,6 +23,12 @@ module.exports = (sequelize, DataTypes) => {
       title: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          len: {
+            args: [10, 300],
+            msg: "Title should be between 10 and 300 characters",
+          },
+        },
       },
       slug: {
         type: DataTypes.STRING,
@@ -31,10 +37,17 @@ module.exports = (sequelize, DataTypes) => {
       },
       image: {
         type: DataTypes.STRING,
+        // unique: true,
       },
       content: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          len: {
+            args: [10],
+            msg: "Content should be above 10 characters",
+          },
+        },
       },
       author: {
         allowNull: false,

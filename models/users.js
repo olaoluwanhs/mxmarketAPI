@@ -17,36 +17,63 @@ module.exports = (sequelize, DataTypes) => {
       first_name: {
         allowNull: false,
         type: DataTypes.STRING,
+        validate: {
+          notEmpty: false,
+        },
       },
       last_name: {
         allowNull: false,
         type: DataTypes.STRING,
+        validate: {
+          notEmpty: false,
+        },
       },
       user_name: {
         allowNull: false,
         type: DataTypes.STRING,
         unique: true,
+        validate: {
+          notEmpty: false,
+        },
       },
       password: {
         allowNull: false,
         type: DataTypes.STRING,
+        validate: {
+          notEmpty: false,
+        },
       },
       email: {
         allowNull: false,
         type: DataTypes.STRING,
         unique: true,
+        validate: {
+          notEmpty: false,
+        },
       },
       phone_number: {
         allowNull: false,
         type: DataTypes.STRING,
         unique: true,
+        validate: {
+          notEmpty: false,
+        },
       },
       whatsapp: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         unique: true,
+        validate: {
+          notEmpty: false,
+        },
       },
-      location: DataTypes.STRING,
+      location: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: false,
+        },
+      },
       image: {
         type: DataTypes.STRING,
         unique: true,

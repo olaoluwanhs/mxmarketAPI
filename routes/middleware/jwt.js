@@ -1,11 +1,13 @@
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const res = require("express/lib/response");
 
 function verifyUser(req, res, next) {
   const mxtoken = req.cookies.mxcookie;
+  // console.log(mxtoken);
   try {
     if (mxtoken == undefined) {
-      req.authenticatedUser = {};
+      req.authenticatedUser = { mesage: "no User" };
       next();
       return;
     }
@@ -13,8 +15,9 @@ function verifyUser(req, res, next) {
     req.authenticatedUser = user;
     next();
   } catch (error) {
-    console.log(error.message);
-    res.json({ mesage: "Unauthorized user" });
+    console.log(error);
+    // res.json({ mesage: "Unauthorized user" });
+    req.authenticatedUser = {};
   }
 }
 

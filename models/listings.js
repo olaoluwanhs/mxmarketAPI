@@ -21,7 +21,15 @@ module.exports = (sequelize, DataTypes) => {
       },
       category: DataTypes.STRING,
       sub_category: DataTypes.STRING,
-      title: DataTypes.STRING,
+      title: {
+        type: DataTypes.STRING,
+        validate: {
+          len: {
+            msg: "Title Should be between 5 and 30 characters",
+            args: [5, 60],
+          },
+        },
+      },
       slug: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -31,12 +39,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      price_type: {
+        type: DataTypes.STRING,
+      },
       price: DataTypes.INTEGER,
       description: DataTypes.STRING,
       state: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "published",
+      },
+      images: {
+        type: DataTypes.STRING,
       },
       expiry: {
         type: "TIMESTAMP",

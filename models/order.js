@@ -30,8 +30,13 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: "this-is-a-delivery-request-alone",
       }, //listing id
-      from: { type: DataTypes.INTEGER, allowNull: false },
-      to: { type: DataTypes.INTEGER, allowNull: false },
+      product_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "Delivery Request",
+      },
+      from: { type: DataTypes.STRING, allowNull: false },
+      to: { type: DataTypes.STRING, allowNull: false },
       price: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
       description: DataTypes.STRING,
     },
