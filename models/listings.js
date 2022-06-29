@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: sequelize.col("id"),
       },
       author: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       price_type: {

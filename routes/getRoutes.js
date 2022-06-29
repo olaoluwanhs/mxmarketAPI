@@ -13,8 +13,6 @@ const {
   posts,
 } = require("../models");
 const { signUser, verifyUser } = require("./middleware/jwt");
-const req = require("express/lib/request");
-const res = require("express/lib/response");
 
 function getRoutes(app) {
   // get route to get a user
@@ -111,13 +109,47 @@ function getRoutes(app) {
       res.json({ message: "Error occured", error: error.message });
     }
   });
+  app.get(
+    "/userListings",
+    verifyUser,
+    async ({ query, authenticatedUser }, res) => {
+      //
+      try {
+        //
+        const { user } = query;
+        const result = await listings.findAll({
+          where: {
+            author: user,
+          },
+        });
+        return res.json({
+          message: (() => {
+            if (authenticatedUser.user_name == user) {
+              // console.log(authenticatedUser.user_name, user);
+              return "user-owns-listings";
+            }
+            console.log(authenticatedUser, user);
+            return "user-does-not-own-listings";
+          })(),
+          result,
+        });
+        //
+      } catch (error) {
+        console.log(error.message);
+        return res.json({
+          message: "An error occured",
+          error: error.message,
+        });
+      }
+    }
+  );
 
   // get route to listings
   app.get("/listings", async ({ query }, res) => {
     //
     const { start, limit } = query;
     try {
-      const result = await listings.findAll({
+      let result = await listings.findAll({
         where: { state: "published" },
         offset: Number(start) || 0,
         limit: Number(limit) || undefined,
@@ -176,10 +208,10 @@ function getRoutes(app) {
       if (gottenOrder == null) {
         return res.json({ message: "There is order" });
       }
-      // compare id to from and to
+      // compare user_name to from and to
       if (
-        authenticatedUser.id != gottenOrder.from &&
-        authenticatedUser != gottenOrder.to
+        authenticatedUser.user_name != gottenOrder.from &&
+        authenticatedUser.user_name != gottenOrder.to
       ) {
         return res.json({
           message: "This order isn't yours",
@@ -199,7 +231,6 @@ function getRoutes(app) {
       if (authenticatedUser.id == undefined) {
         return res.json({ message: "Unauthorised action" });
       }
-      console.log(authenticatedUser);
       //
       let where =
         query.type == "from"
@@ -210,6 +241,7 @@ function getRoutes(app) {
         where: where,
         offset: Number(query.offset) || 0,
         limit: Number(query.limit) || undefined,
+        order: [["updatedAt", "DESC"]],
       });
       //
       return res.json(orderLists);
@@ -241,6 +273,7 @@ function getRoutes(app) {
       const affiliateProducts = await affiliate.findAll({
         limit: Number(query.limit) || undefined,
         offset: Number(query.offset) || 0,
+        order: [["updatedAt", "DESC"]],
       });
       return res.json(affiliateProducts);
       //
@@ -358,5 +391,28 @@ function getRoutes(app) {
     }
   });
   // Others...
+  app.get("/images", verifyUser, async (req, res) => {
+    const fs = require("fs");
+    try {
+      // console.log(req.authenticatedUser);
+      if (req.authenticatedUser.userType != "admin") {
+        return res.json({ message: "Unauthorized action" });
+      }
+      //
+      const images = fs.readdirSync(__dirname + "/../public/adminImages/");
+      // console.log(images);
+
+      res.render("pages/images", { images: images });
+    } catch (error) {
+      console.log(error.message);
+      res.render(error);
+    }
+  });
+
+  //
+  app.get("/reviews", (req, res) => {
+    //
+    res.render("pages/reviews");
+  });
 }
 module.exports = getRoutes;

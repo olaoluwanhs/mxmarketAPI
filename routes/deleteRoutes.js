@@ -13,14 +13,14 @@ function deleteRoutes(app) {
   app.delete(
     "/listing",
     verifyUser,
-    async ({ body, authenticatedUser }, res) => {
+    async ({ query, authenticatedUser }, res) => {
       try {
         if (authenticatedUser.id == undefined) {
           return res.json({ message: "Unauthorized action" });
         }
         const toBeDeleted = await listings.findOne({
           where: {
-            id: body.id,
+            id: query.id,
           },
           attributes: ["id", "author"],
         });
@@ -28,19 +28,19 @@ function deleteRoutes(app) {
           return res.json({ message: "object doesn't exist" });
         }
         //
-        if (toBeDeleted.author != authenticatedUser.id) {
+        if (toBeDeleted.author != authenticatedUser.user_name) {
           return res.json({ message: "Unauthorized action" });
         }
         //
         const deleted = await listings.destroy({
           where: {
-            id: body.id,
+            id: query.id,
           },
         });
         return res.json({ message: "Deleted successfully", result: deleted });
       } catch (error) {
         console.log(error.message);
-        return res.json({ message: "An error occured" });
+        return res.json({ message: "An error occured", error: error.message });
       }
     }
   );
@@ -152,6 +152,22 @@ function deleteRoutes(app) {
       return res.json(deleted);
     } catch (error) {
       return res.json({ message: "An error occurred", error: error.message });
+    }
+  });
+  //
+  app.get("/deleteAdminImage", (req, res) => {
+    try {
+      const fs = require("fs");
+      const { name } = req.query;
+      //
+      fs.unlink(__dirname + "/../public/adminImages/" + name, () => {
+        console.log(`deleted ${name} successfully`);
+      });
+      //
+      res.redirect("http://localhost:4000/images");
+    } catch (error) {
+      console.log(error.message);
+      res.redirect("http://localhost:4000/images");
     }
   });
 }

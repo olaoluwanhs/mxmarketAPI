@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const {
   sequelize,
   users,
@@ -7,6 +8,7 @@ const {
   affiliate,
   posts,
 } = require("../models");
+const { ImageUpload } = require("./middleware/images");
 const { signUser, verifyUser } = require("./middleware/jwt");
 //
 function postRoutes(app) {
@@ -47,7 +49,7 @@ function postRoutes(app) {
         });
       }
       // console.log(body);
-      body.author = authenticatedUser.id;
+      body.author = authenticatedUser.user_name;
       let results = await listings.create(body);
       res.json(results);
       //
@@ -60,7 +62,7 @@ function postRoutes(app) {
 
   app.post("/order", verifyUser, async ({ body, authenticatedUser }, res) => {
     try {
-      console.log(authenticatedUser.id);
+      // console.log(authenticatedUser.id);
       if (authenticatedUser.id == undefined) {
         return res.json({
           message: "not signed in",
@@ -215,6 +217,93 @@ function postRoutes(app) {
       return res.json({ message: "An error occured", error: error.message });
     }
   });
+  //
+
+  // Image uploads
+  app.post("/image", (req, res) => {
+    try {
+      ImageUpload.single(req, res, (err) => {
+        if (err) {
+          return res.json({ message: "error Uploading files", error: err });
+        }
+        //
+        // console.log(req.file);
+        return res.send({
+          message: "Upload successful",
+          name: `http://localhost:4000/uploads/${req.file.filename}`,
+        });
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.json({
+        message: "Error uploading images",
+        error: error,
+      });
+    }
+  });
+  //
+  app.post("/images", (req, res) => {
+    try {
+      ImageUpload.multiple(req, res, (err) => {
+        if (err) {
+          return res.json({ message: "error Uploading files", error: err });
+        }
+        //
+        const images = req.files.map((ele) => {
+          return ele.filename;
+        });
+        // console.log(images);
+        //
+        return res.json({
+          message: "Upload succesfull",
+          names: JSON.stringify(images),
+        });
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.json(error);
+    }
+  });
+  //
+  app.post("/adminImages", verifyUser, async (req, res) => {
+    try {
+      if (req.authenticatedUser.userType != "admin") {
+        return res.json({ message: "Unauthorized action" });
+      }
+      // console.log(req.files);
+      ImageUpload.adminUploads(req, res, (err) => {
+        if (err) {
+          return res.json({ message: "error Uploading files", error: err });
+        }
+        //
+        const images = req.files.map((ele) => {
+          return ele.filename;
+        });
+        // console.log(images);
+        //
+        res.redirect("http://localhost:4000/images");
+      });
+    } catch (error) {
+      console.log(error.message);
+      res.redirect("http://localhost:4000/images");
+    }
+  });
   // Others...
+  // This is temporary
+  app.post("/reviews", async (req, res) => {
+    try {
+      const fs = require("fs");
+      const html = `<div><h1>${req.body.name || "John Doe"}</h1><h4>${
+        req.ip
+      }</h4><p>${req.body.content}</p></div>`;
+      // console.log();
+      fs.appendFile(__dirname + "/../views/pages/reviews.ejs", html, () => {
+        // console.log("done");
+        res.json({ message: "success" });
+      });
+    } catch (error) {
+      return res.json({ message: "An error occured", error: error.message });
+    }
+  });
 }
 module.exports = postRoutes;
