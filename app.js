@@ -24,12 +24,12 @@ app.use(express.static("./public"));
 //
 app.set("view engine", "ejs");
 //
+syncStuff();
 getRoutes(app);
 postRoutes(app);
 updateRoutes(app);
 deleteRoutes(app);
 getCounts(app);
-// syncStuff();
 let expireListingInterval = setInterval(() => {
   expireListing();
   deleteListing();
