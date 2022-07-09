@@ -7,6 +7,7 @@ const {
   categories,
   affiliate,
   posts,
+  deliveries,
 } = require("../models");
 const { ImageUpload } = require("./middleware/images");
 const { signUser, verifyUser } = require("./middleware/jwt");
@@ -33,7 +34,17 @@ function postRoutes(app) {
     }
   });
   //
-
+  app.post("/delivery", async ({ body }, res) => {
+    try {
+      //
+      const result = await deliveries.create(body);
+      return res.json(result);
+      //
+    } catch (error) {
+      return res.json({ message: "An error occured", error: error });
+    }
+  });
+  //
   app.post("/listing", verifyUser, async ({ body, authenticatedUser }, res) => {
     try {
       //

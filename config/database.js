@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize("mxmarket", "root", "", {
   host: "localhost",
   dialect: "mysql" /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */,
+  logging: false,
 });
 
 //

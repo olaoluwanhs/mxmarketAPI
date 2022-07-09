@@ -11,8 +11,10 @@ const {
   categories,
   affiliate,
   posts,
+  deliveries,
 } = require("../models");
 const { signUser, verifyUser } = require("./middleware/jwt");
+const res = require("express/lib/response");
 
 function getRoutes(app) {
   // get route to get a user
@@ -301,6 +303,22 @@ function getRoutes(app) {
         message: "An error occured",
         error: error.message,
       });
+    }
+  });
+  //
+  app.get("/delivery", async ({ query }, res) => {
+    //
+    try {
+      //
+      const delivery = await deliveries.findOne({
+        where: {
+          id: query.id,
+        },
+      });
+      return res.json(delivery);
+      //
+    } catch (error) {
+      return res.json({ message: "An error occured", error: error.message });
     }
   });
   //
