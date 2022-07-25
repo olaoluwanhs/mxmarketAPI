@@ -11,12 +11,18 @@ const { sign } = require("jsonwebtoken"),
   express = require("express"),
   cors = require("cors"),
   app = express(),
-  port = 4000,
+  port = process.env.PORT || 4000,
   { sequelize, syncStuff } = require("./models/index");
 require("dotenv").config();
 
 // Body parsing middleware
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://mxmarket.com.ng/", "https://mxmarket.com.ng"],
+  })
+);
+// app.use(cors({ credentials: true, origin: "http://mxmarket.com.ng/" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -24,7 +30,10 @@ app.use(express.static("./public"));
 //
 app.set("view engine", "ejs");
 //
-syncStuff();
+app.get("/mysql", async () => {
+  syncStuff();
+});
+//
 getRoutes(app);
 postRoutes(app);
 updateRoutes(app);

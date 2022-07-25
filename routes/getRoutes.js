@@ -374,7 +374,7 @@ function getRoutes(app) {
   //
   app.get("/search", async ({ query }, res) => {
     try {
-      console.log(query);
+      // console.log(query);
       const results = await listings.findAll({
         where: {
           category: { [Op.like]: `%${query.category || ""}%` },

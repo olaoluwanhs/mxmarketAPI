@@ -16,9 +16,9 @@
     "logging":false
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
+    "username": "mxmarke1_root",
+    "password": "@#$123mxmarket",
+    "database": "mxmarke1_apidb",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "logging":false
