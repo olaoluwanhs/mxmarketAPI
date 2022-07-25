@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       user_name: {
         allowNull: false,
         type: DataTypes.STRING,
-        unique: true,
+        unique: "column",
         validate: {
           notEmpty: false,
         },
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         allowNull: false,
         type: DataTypes.STRING,
-        unique: true,
+        unique: "column",
         validate: {
           notEmpty: false,
         },
@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       phone_number: {
         allowNull: false,
         type: DataTypes.STRING,
-        unique: true,
+        unique: "column",
         validate: {
           notEmpty: false,
         },
@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
       whatsapp: {
         allowNull: false,
         type: DataTypes.STRING,
-        unique: true,
+        unique: "column",
         validate: {
           notEmpty: false,
         },
@@ -76,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       image: {
         type: DataTypes.STRING,
-        unique: true,
+        unique: "column",
         allowNull: true,
       },
       wallet: {

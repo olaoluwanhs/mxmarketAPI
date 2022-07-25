@@ -30,16 +30,8 @@ app.use(express.static("./public"));
 //
 app.set("view engine", "ejs");
 //
-// Creating and altering databaase tables
-app.get("/mysql", async (req, res) => {
-  try {
-    await syncStuff();
-    return res.json("done creating/ altering");
-  } catch (error) {
-    res.json(error.message);
-  }
-});
 //
+syncStuff();
 getRoutes(app);
 postRoutes(app);
 updateRoutes(app);
