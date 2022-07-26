@@ -33,7 +33,6 @@ module.exports = (sequelize, DataTypes) => {
       slug: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: sequelize.col("id"),
       },
       author: {
         type: DataTypes.STRING,
@@ -54,9 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       expiry: {
         type: "TIMESTAMP",
-        defaultValue: sequelize.literal(
-          "DATE_ADD(CURRENT_DATE(), INTERVAL 30 DAY)"
-        ),
+        defaultValue: sequelize.literal("CURRENT_TIMESTAMP()"),
         allowNull: false,
       },
     },
@@ -66,6 +63,12 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         beforeSave: (user) => {
           user.slug = `${user.title.replace(/ /g, "-")}-${user.id}`;
+        },
+        afterSave: async (user) => {
+          //
+          await sequelize.query(
+            `UPDATE listings SET expiry=DATE_ADD(CURDATE(),INTERVAL 10 DAY);`
+          );
         },
       },
     }
