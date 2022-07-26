@@ -67,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
         afterSave: async (user) => {
           //
           await sequelize.query(
-            `UPDATE listings SET expiry=DATE_ADD(CURDATE(),INTERVAL 10 DAY);`
+            `UPDATE listings SET expiry=DATE_ADD(CURDATE(),INTERVAL 10 DAY) WHERE id='${user.id}';`
           );
         },
       },
